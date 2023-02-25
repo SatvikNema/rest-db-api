@@ -14,7 +14,6 @@ setup(
     author_email="satviknema@gmail.com",
     entry_points={
         "shillelagh.adapter": [
-            "myweatherapi = restDbApi.my_weather_adapter:MyWeatherAdapter",
             "myrestadapter = restDbApi.rest_api_adapter:RestAdapter"
         ],
         "sqlalchemy.dialects": ["rest = restDbApi.rest_api_dialect:RestApiDialect"],
