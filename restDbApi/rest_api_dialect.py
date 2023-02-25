@@ -37,4 +37,5 @@ class RestApiDialect(APSWDialect):
         return ["'Tables' dont exists in rest APIs. Use SQL lab directly"]
 
     def do_ping(self, dbapi_connection: _ConnectionFairy) -> bool:
+        # required to check 'active' connections by superset. As this is a REST call, this is not applicable.
         return True

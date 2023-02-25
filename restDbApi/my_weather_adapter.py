@@ -4,46 +4,16 @@ from typing import Optional, Any, Tuple, Union, Dict, List, Iterator
 
 from shillelagh.adapters.base import Adapter
 from shillelagh.fields import (
-    Boolean,
     Field,
     Filter,
     Float,
     Integer,
-    ISODate,
-    ISODateTime,
-    ISOTime,
-    String,
 )
-from shillelagh.filters import Range, Equal
+from shillelagh.filters import Equal
 from shillelagh.typing import RequestedOrder, Row
-from datetime import datetime, date, timedelta
 import requests
-import dateutil.parser
-from shillelagh.lib import SimpleCostModel
-
-from restDbApi.fetch_flat_data import get_flat_weather_data
-
-
-# def get_session() -> requests_cache.CachedSession:
-#     """
-#     Return a cached session.
-#     """
-#     return requests_cache.CachedSession(
-#         cache_name="generic_json_cache",
-#         backend="sqlite",
-#         expire_after=180,
-#     )
 
 class MyWeatherAdapter(Adapter):
-    # days = Integer(filters=[Equal])
-    # aqi = Boolean(filters=[Equal])
-    # alerts = Boolean(filters=[Equal])
-
-    # maxtemp_c = Float()
-    # date = ISODate()
-    # maxwind_kph = Float()
-    # daily_chance_of_rain = Integer()
-    # hour_key = String()
 
     safe = True
     supports_limit = True
@@ -55,7 +25,6 @@ class MyWeatherAdapter(Adapter):
 
     @staticmethod
     def supports(uri: str, fast: bool = True, **kwargs: Any) -> Optional[bool]:
-        return False
         parsed = urllib.parse.urlparse(uri)
         query_string = urllib.parse.parse_qs(parsed.query)
         return (
@@ -88,8 +57,6 @@ class MyWeatherAdapter(Adapter):
             "days": Integer(filters=[Equal])
         }
 
-    # get_cost = SimpleCostModel(100)
-
     def get_rows(
             self,
             bounds: Dict[str, Filter],
@@ -103,10 +70,6 @@ class MyWeatherAdapter(Adapter):
 
         url = "http://api.weatherapi.com/v1/forecast.json"
         params = {"key": self.api_key, "q": self.location, "days": days_param.value, "aqi": aqi_param.value, "alerts": alerts_param.value}
-        # params = {"key": self.api_key, "q": self.location, "days": 3, "aqi": "no", "alerts": "no"}
-        # response = get_flat_weather_data(params, url)
-        
-        # fetch data from api
         response = requests.get(url, params=params, )
         payload = response.json()
         flat_data = []
@@ -119,8 +82,7 @@ class MyWeatherAdapter(Adapter):
                 i += 1
             data["astro"] = record["astro"]
             flat_data.append(data)
-            
-            
+
         for i, record in enumerate(flat_data):
             yield {
                 "rowid": i,
