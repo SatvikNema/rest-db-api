@@ -1,4 +1,3 @@
-import pytest
 from pytest_mock import MockerFixture
 from requests import Session
 from requests_mock.mocker import Mocker

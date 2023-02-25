@@ -1,10 +1,6 @@
-import os
-import sys
-from pathlib import Path
-from shutil import rmtree
-from typing import List, Tuple
 
-from setuptools import Command, find_packages, setup
+
+from setuptools import find_packages, setup
 
 setup(
     name="restDbApi",

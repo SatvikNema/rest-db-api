@@ -1,10 +1,8 @@
 from typing import Generator
 
 import pytest
-from sqlalchemy.engine import Connection, Engine
+from sqlalchemy.engine import Connection
 from sqlalchemy import create_engine
-import responses
-from shillelagh.backends.apsw.db import connect
 
 GET_SQL_ALCHEMY_URI = 'rest://api.covidtracking.com?ishttps=1'
 POST_SQL_ALCHEMY_URI = 'rest://some.api.com?ishttps=0'
