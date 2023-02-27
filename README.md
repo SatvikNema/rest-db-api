@@ -27,7 +27,7 @@ Lets assume I am querying for 3 days weather foreacast for Bangalore. The respon
 https://api.weatherapi.com/v1/forecast.json?key={{your_api_key}}&q=Bangalore&days=3&aqi=no&alerts=no
 ```
 
-You can refer [this file](http://somelink.com) to check the response structure.
+You can refer [this file](https://github.com/SatvikNema/rest-db-api/blob/main/examples/sample-weather-response.json) to check the response structure.
 We can query this with rest-db-api:
 ```python
 from sqlalchemy import create_engine  
