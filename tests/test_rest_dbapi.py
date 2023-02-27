@@ -2,19 +2,44 @@ from pytest_mock import MockerFixture
 from requests import Session
 from requests_mock.mocker import Mocker
 import urllib
-import restDbApi.rest_api_dialect
 from sqlalchemy import inspect
 
+from restDbApi.utils import get_virtual_table
+
 SIMPLE_URL = 'https://api.covidtracking.com/v1/us/daily.json'
-POST_URL = 'http://some.api.com/some/api/path?a=60=-50&c=someQuery'
+POST_URL = 'http://some.api.com/some/api/path?a=60&b=-50&c=someQuery'
 
-def test_rest_adapter(mocker: MockerFixture, requests_mock: Mocker, covid_data_connection):
-    mocker.patch(
-        "restDbApi.rest_api_adapter.requests_cache.CachedSession",
-        return_value=Session(),
-    )
+MOCK_PARAMS = {
+    'key': 'this is my key',
+    'q': 'Bangalore',
+    'days': 5
+}
+MOCK_BODY = {
+    "this": [
+        {
+            "id": "1",
+            "name": "test body",
+            "key": 123
+        },
+        {
+            "id": "2",
+            "name": "test body 2",
+            "key": 567
+        }
+    ],
+    "id": -10
+}
 
-    requests_mock.get(SIMPLE_URL, json= [
+MOCK_HEADERS = {
+    "content-type": "application/json"
+}
+
+MOCK_HEADERS2 = {
+    "content-type": "application/json",
+    "ENV": "dev"
+}
+
+MOCK_RESPONSE= [
       {
     "date": 20210307,
     "states": 56,
@@ -68,7 +93,15 @@ def test_rest_adapter(mocker: MockerFixture, requests_mock: Mocker, covid_data_c
     "positiveIncrease": 60015,
     "totalTestResultsIncrease": 1430992,
     "hash": "dae5e558c24adb86686bbd58c08cce5f610b8bb0"
-  }])
+  }]
+
+def test_rest_adapter(mocker: MockerFixture, requests_mock: Mocker, covid_data_connection):
+    mocker.patch(
+        "restDbApi.rest_api_adapter.requests_cache.CachedSession",
+        return_value=Session(),
+    )
+
+    requests_mock.get(SIMPLE_URL, json=MOCK_RESPONSE)
 
     sql = "select * from '/v1/us/daily.json'"
     data = covid_data_connection.execute(sql)
@@ -80,7 +113,7 @@ def test_rest_adapter_post(mocker: MockerFixture, requests_mock: Mocker, post_da
         return_value=Session(),
     )
 
-    endpoint = '/some/api/path?a=60=-50&c=someQuery'
+    endpoint = '/some/api/path?a=60&b=-50&c=someQuery'
     headers = '&header1=Content-Type:application/json'
     headers += '&header2=IAM_ID:satvik'
     headers += '&header3=ENVIRONMENT:staging:1.5.3'
@@ -93,61 +126,7 @@ def test_rest_adapter_post(mocker: MockerFixture, requests_mock: Mocker, post_da
     url = endpoint + headers + encoded_body + jsonpath
     sql = f"select * from '{url}'"
 
-    requests_mock.post(POST_URL, json= [
-      {
-    "date": 20210307,
-    "states": 56,
-    "positive": 28756489,
-    "negative": 74582825,
-    "pending": 11808,
-    "hospitalizedCurrently": 40199,
-    "hospitalizedCumulative": 776361,
-    "inIcuCurrently": 8134,
-    "inIcuCumulative": 45475,
-    "onVentilatorCurrently": 2802,
-    "onVentilatorCumulative": 4281,
-    "dateChecked": "2021-03-07T24:00:00Z",
-    "death": 515151,
-    "hospitalized": 776361,
-    "totalTestResults": 363825123,
-    "lastModified": "2021-03-07T24:00:00Z",
-    "recovered": None,
-    "total": 0,
-    "posNeg": 0,
-    "deathIncrease": 842,
-    "hospitalizedIncrease": 726,
-    "negativeIncrease": 131835,
-    "positiveIncrease": 41835,
-    "totalTestResultsIncrease": 1170059,
-    "hash": "a80d0063822e251249fd9a44730c49cb23defd83"
-  },
-  {
-    "date": 20210306,
-    "states": 56,
-    "positive": 28714654,
-    "negative": 74450990,
-    "pending": 11783,
-    "hospitalizedCurrently": 41401,
-    "hospitalizedCumulative": 775635,
-    "inIcuCurrently": 8409,
-    "inIcuCumulative": 45453,
-    "onVentilatorCurrently": 2811,
-    "onVentilatorCumulative": 4280,
-    "dateChecked": "2021-03-06T24:00:00Z",
-    "death": 514309,
-    "hospitalized": 775635,
-    "totalTestResults": 362655064,
-    "lastModified": "2021-03-06T24:00:00Z",
-    "recovered": None,
-    "total": 0,
-    "posNeg": 0,
-    "deathIncrease": 1680,
-    "hospitalizedIncrease": 503,
-    "negativeIncrease": 143835,
-    "positiveIncrease": 60015,
-    "totalTestResultsIncrease": 1430992,
-    "hash": "dae5e558c24adb86686bbd58c08cce5f610b8bb0"
-  }])
+    requests_mock.post(POST_URL, json= MOCK_RESPONSE)
     data = post_data_connection.execute(sql)
     assert len(list(data)) == 2
 
@@ -156,3 +135,26 @@ def test_dialect_get_table_name(covid_data_connection):
     tables = metadata.get_table_names()
     assert len(tables) == 1
     assert tables[0] == "'Tables' dont exists in rest APIs. Use SQL lab directly"
+
+
+def test_get_virtual_table():
+    endpoint = '/v1/forecast.json'
+    default = get_virtual_table(endpoint=endpoint)
+    assert default == '/v1/forecast.json#$[*]'
+
+    with_params = get_virtual_table(endpoint=endpoint, params=MOCK_PARAMS)
+    assert with_params == '/v1/forecast.json?key=this+is+my+key&q=Bangalore&days=5#$[*]'
+
+    with_headers = get_virtual_table(endpoint=endpoint, params=MOCK_PARAMS, headers=MOCK_HEADERS)
+    assert with_headers == '/v1/forecast.json?key=this+is+my+key&q=Bangalore&days=5&header1=content-type:application/json#$[*]'
+
+    only_headers = get_virtual_table(endpoint=endpoint, headers=MOCK_HEADERS)
+    assert only_headers == '/v1/forecast.json?header1=content-type:application/json#$[*]'
+
+    with_body = get_virtual_table(endpoint=endpoint, params=MOCK_PARAMS, headers=MOCK_HEADERS2, body=MOCK_BODY)
+    assert with_body == '/v1/forecast.json?key=this+is+my+key&q=Bangalore&days=5&header1=content-type:application/json&header2=ENV:dev&body=%7B%22this%22%3A%20%5B%7B%22id%22%3A%20%221%22%2C%20%22name%22%3A%20%22test%20body%22%2C%20%22key%22%3A%20123%7D%2C%20%7B%22id%22%3A%20%222%22%2C%20%22name%22%3A%20%22test%20body%202%22%2C%20%22key%22%3A%20567%7D%5D%2C%20%22id%22%3A%20-10%7D#$[*]'
+
+    only_body = get_virtual_table(endpoint=endpoint, body=MOCK_BODY)
+    assert only_body == '/v1/forecast.json?body=%7B%22this%22%3A%20%5B%7B%22id%22%3A%20%221%22%2C%20%22name%22%3A%20%22test%20body%22%2C%20%22key%22%3A%20123%7D%2C%20%7B%22id%22%3A%20%222%22%2C%20%22name%22%3A%20%22test%20body%202%22%2C%20%22key%22%3A%20567%7D%5D%2C%20%22id%22%3A%20-10%7D#$[*]'
+
+
