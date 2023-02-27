@@ -24,3 +24,7 @@ myrestadapter = "restDbApi.rest_api_adapter:RestAdapter"
 
 [project.entry-points."sqlalchemy.dialects"]
 rest = "restDbApi.rest_api_dialect:RestApiDialect"
+
+[project.urls]
+"Homepage" = "https://github.com/SatvikNema/rest-db-api"
+"Bug Tracker" = "https://github.com/SatvikNema/rest-db-api/issues"

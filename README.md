@@ -156,14 +156,15 @@ for i in connection.execute(f'SELECT * FROM "{virtual_table}"'):
 
 #### Usage with apache-superset
 1. Go to Connect database
-	![img_1.png](img_1.png)
+
+    ![img_1.png](img_1.png)
 2. Select Shillelagh
 3. add the connection string with `rest://` prefix
    eg: `rest://api.weatherapi.com?ishttps=1`
 4. Gice your connection a name: eg `Weather API`
-1. Click test connection and then add
-2. Go to SQL lab and select `Weather API` from database.
-3. You can leave schema empty and query directly!![img_2.png](img_2.png)
+5. Click test connection and then add
+6. Go to SQL lab and select `Weather API` from database.
+7. You can leave schema empty and query directly!![img_2.png](img_2.png)
 
 Query is:
 ```SQL
