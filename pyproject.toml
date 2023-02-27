@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rest-db-api"
+version = "0.0.1"
+description = "A rest db api designed to be integrated with apache superset"
+authors = [
+  { name="Satvik Nema", email="saviknema@gmail.com" },
+]
+readme = "README.md"
+requires-python = ">=3.7"
+license = {file = "LICENSE"}
+keywords = ["rest", "dbapi", "sqlalchemy", "adapter", "superset"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.entry-points."shillelagh.adapter"]
+myrestadapter = "restDbApi.rest_api_adapter:RestAdapter"
+
+[project.entry-points."sqlalchemy.dialects"]
+rest = "restDbApi.rest_api_dialect:RestApiDialect"

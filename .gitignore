@@ -162,3 +162,4 @@ test/
 
 *.sqlite
 examples/testDialect.py
+this_was_old_setup.txt
