@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rest-db-api"
-version = "1.0.0"
+version = "1.1.0"
 description = "A rest db api designed to be integrated with apache superset"
 authors = [
   { name="Satvik Nema", email="saviknema@gmail.com" },
@@ -17,6 +17,12 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+]
+dependencies = [
+    "SQLAlchemy<=1.4.39",
+    "shillelagh",
+    "requests-cache",
+    "jsonpath-python"
 ]
 
 [project.entry-points."shillelagh.adapter"]
