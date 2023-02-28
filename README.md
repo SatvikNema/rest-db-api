@@ -1,9 +1,9 @@
 
 # REST-DB-API  
   
-This is a plugin to be used with apache-superset, for integrating with REST APIs.
+This is a plugin to be used with apache-superset, for importing data via REST APIs.
 
-This converts REST APIs to be used as db-api in python, and builds on top of [shillelagh's](https://github.com/betodealmeida/shillelagh) generic json adapter.
+It builds on top of [shillelagh's](https://github.com/betodealmeida/shillelagh) generic json adapter.
 
 To get started, just do:
 ```bash
@@ -12,9 +12,9 @@ pip install rest-db-api
 
 Motivation
 1. Generic json adapter did not support request bodies and headers.
-2. Independance to specify http/https
+2. Independence to specify http/https
 4. `rest` dialect enables this adapter to be used with apache superset. 
-5. Dialect also enables us to set a base URL, and query multiple endpoints with the same 'connection'.
+5. The dialect enables us to set a base URL, and query multiple endpoints with the same 'connection'.
 
 
 # Examples
@@ -22,13 +22,14 @@ Motivation
 #### GET requests
 Querying [weather api](https://www.weatherapi.com/)
 
-Lets assume I am querying for 3 days weather foreacast for Bangalore. The response gives the results by hour. You can get a free key from 
+Lets assume I am querying for 3 days weather forecast for Bangalore. The response gives the results by hour.
 ```curl
-https://api.weatherapi.com/v1/forecast.json?key={{your_api_key}}&q=Bangalore&days=3&aqi=no&alerts=no
+https://api.weatherapi.com/v1/forecast.json?key={{your_key}}&q=Bangalore&days=3&aqi=no&alerts=no
 ```
+You can get a free key by creating an account there.
 
 You can refer [this file](https://github.com/SatvikNema/rest-db-api/blob/main/examples/sample-weather-response.json) to check the response structure.
-We can query this with rest-db-api:
+We can query this with `rest-db-api`:
 ```python
 from sqlalchemy import create_engine  
 from rest_db_api.utils import get_virtual_table  
@@ -52,7 +53,7 @@ for i in connection.execute(f'SELECT * FROM "{virtual_table}"'):
 
 The response should return an array of objects/primitives. If not, we need to specify where in the response the array is (using `jsonpath`). In this case that is at `$.forecast.forecastday[*]`
 
-Now, as the shillelagh's `Adapter` class uses in memory storage - `sqllite` , we can query the data using `sqllite` syntax, like querying inside a nested JSON:
+As Shillelagh's `Adapter` class uses in memory storage - `sqllite` , we can query the data using `sqllite` syntax.
 ```python
 query = f"""  
 SELECT  
@@ -154,7 +155,7 @@ for i in connection.execute(f'SELECT * FROM "{virtual_table}"'):
     print(i)
 ```
 
-#### Usage with apache-superset
+### Usage with apache-superset
 1. Go to Connect database
 
     ![img_1.png](img_1.png)
@@ -179,7 +180,7 @@ It returns a default message. That message is configured in `rest_api_dialect.py
 
 
 ### Getting the virtual table 
-In the superset's SQL lab, we're directly using 
+In superset's SQL lab, we're directly using 
 ```python
 /v1/forecast.json?key={your_key}&q=Bangalore&days=5#$.forecast.forecastday[*]
 ```
