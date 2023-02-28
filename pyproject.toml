@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rest-db-api"
-version = "1.2.0"
+version = "1.2.1"
 description = "A rest db api designed to be integrated with apache superset"
 authors = [
   { name="Satvik Nema", email="saviknema@gmail.com" },
