@@ -26,10 +26,10 @@ dependencies = [
 ]
 
 [project.entry-points."shillelagh.adapter"]
-myrestadapter = "restDbApi.rest_api_adapter:RestAdapter"
+myrestadapter = "rest_db_api.rest_api_adapter:RestAdapter"
 
 [project.entry-points."sqlalchemy.dialects"]
-rest = "restDbApi.rest_api_dialect:RestApiDialect"
+rest = "rest_db_api.rest_api_dialect:RestApiDialect"
 
 [project.urls]
 "Homepage" = "https://github.com/SatvikNema/rest-db-api"

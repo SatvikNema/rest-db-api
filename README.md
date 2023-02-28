@@ -31,7 +31,7 @@ You can refer [this file](https://github.com/SatvikNema/rest-db-api/blob/main/ex
 We can query this with rest-db-api:
 ```python
 from sqlalchemy import create_engine  
-from restDbApi.utils import get_virtual_table  
+from rest_db_api.utils import get_virtual_table  
   
 engine = create_engine("rest://api.weatherapi.com?ishttps=1")  
   
@@ -103,7 +103,7 @@ curl --location -g --request POST 'https://some.api.com/some/api/path?a=60&c=som
 To query this with db-api, follow the snippet:
 ```python
 from sqlalchemy import create_engine  
-from restDbApi.utils import get_virtual_table
+from rest_db_api.utils import get_virtual_table
   
 engine = create_engine("rest://some.api.com?ishttps=1")
 
@@ -183,7 +183,7 @@ In the superset's SQL lab, we're directly using
 ```python
 /v1/forecast.json?key={your_key}&q=Bangalore&days=5#$.forecast.forecastday[*]
 ```
-To get the similar virtual table address for your endpoint (it may have headers or even body), use the utility `restDbApi.utils.get_virtual_table` and pass in your configs. 
+To get the similar virtual table address for your endpoint (it may have headers or even body), use the utility `rest_db_api.utils.get_virtual_table` and pass in your configs. 
 
  - [x] POST requests (request body)  
  - [x] headers  

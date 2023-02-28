@@ -1,7 +1,7 @@
 [run]
 omit =
     setup.py
-    restDbApi/db_engine_specs.py
+    rest_db_api/db_engine_specs.py
 
 [report]
 exclude_lines =

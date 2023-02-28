@@ -4,7 +4,7 @@ from requests_mock.mocker import Mocker
 import urllib
 from sqlalchemy import inspect
 
-from restDbApi.utils import get_virtual_table
+from rest_db_api.utils import get_virtual_table
 
 SIMPLE_URL = 'https://api.covidtracking.com/v1/us/daily.json'
 POST_URL = 'http://some.api.com/some/api/path?a=60&b=-50&c=someQuery'
@@ -97,7 +97,7 @@ MOCK_RESPONSE= [
 
 def test_rest_adapter(mocker: MockerFixture, requests_mock: Mocker, covid_data_connection):
     mocker.patch(
-        "restDbApi.rest_api_adapter.requests_cache.CachedSession",
+        "rest_db_api.rest_api_adapter.requests_cache.CachedSession",
         return_value=Session(),
     )
 
@@ -109,7 +109,7 @@ def test_rest_adapter(mocker: MockerFixture, requests_mock: Mocker, covid_data_c
 
 def test_rest_adapter_post(mocker: MockerFixture, requests_mock: Mocker, post_data_connection):
     mocker.patch(
-        "restDbApi.rest_api_adapter.requests_cache.CachedSession",
+        "rest_db_api.rest_api_adapter.requests_cache.CachedSession",
         return_value=Session(),
     )
 
