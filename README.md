@@ -165,7 +165,8 @@ for i in connection.execute(f'SELECT * FROM "{virtual_table}"'):
 4. Gice your connection a name: eg `Weather API`
 5. Click test connection and then add
 6. Go to SQL lab and select `Weather API` from database.
-7. You can leave schema empty and query directly!![img_2.png](img_2.png)
+7. You can leave schema empty and query directly!!
+[img_2.png](img_2.png)
 
 Query is:
 ```SQL
