@@ -177,6 +177,9 @@ for i in connection.execute(f'SELECT * FROM "{virtual_table}"'):
 7. You can leave schema empty and query directly!!
 
    ![ss6.png](ss6.png)
+8. save the result by using `Save dataset`
+
+   ![ss7.png](ss7.png)
 
 Query is:
 ```SQL
