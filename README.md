@@ -162,6 +162,7 @@ for i in connection.execute(f'SELECT * FROM "{virtual_table}"'):
 
     ![ss2.png](ss2.png)
 2. Select Shillelagh
+
     ![ss3.png](ss3.png)
     
 3. add the connection string with `rest://` prefix
