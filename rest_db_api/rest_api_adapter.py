@@ -36,8 +36,33 @@ def get_decoded_json_body(encoded_json_body: str) -> Dict[Any, Any]:
     decoded = urllib.parse.unquote(encoded_json_body, CHARSET)
     return json.loads(decoded)
 
+
 def get_encoded_json_body(plain_json_body: str) -> str:
     return urllib.parse.quote(plain_json_body, CHARSET)
+
+
+def decompose_virtual_table(uri: str) -> Tuple[str, Dict[str, List[str]], Dict[str, str], str, Dict[str, Any]]:
+    parsed = urllib.parse.urlparse(uri)
+
+    path = parsed.path
+    params_and_headers: Dict[str, List[str]] = urllib.parse.parse_qs(parsed.query)
+    fragment = urllib.parse.unquote(parsed.fragment) or "$[*]"
+
+    headers: List[HttpHeader] = []
+    query_params: Dict = {}
+    body: Dict = {}
+    for key, val in params_and_headers.items():
+        if key.startswith("header"):
+            header: HttpHeader = HttpHeader.parse_header_params(val[0])
+            headers.append(header)
+        elif key == "body":
+            body = get_decoded_json_body(val[0])
+        else:
+            query_params[key] = ",".join(val)
+
+    headers_dict = HttpHeader.load_headers(headers)
+    return path, query_params, headers_dict, fragment, body
+
 
 class HttpHeader:
     def __init__(self, key, value):
